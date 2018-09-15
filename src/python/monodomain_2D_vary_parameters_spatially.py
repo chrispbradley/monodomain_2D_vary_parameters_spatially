@@ -66,9 +66,8 @@ iron.RandomSeedsSet(randomSeeds)
 
 #DOC-START parallel information
 # Get the number of computational nodes and this computational node number
-computationEnvironment = iron.ComputationEnvironment()
-numberOfComputationalNodes = computationEnvironment.NumberOfWorldNodesGet()
-computationalNodeNumber = computationEnvironment.WorldNodeNumberGet()
+numberOfComputationalNodes = iron.ComputationalNumberOfNodesGet()
+computationalNodeNumber = iron.ComputationalNodeNumberGet()
 #DOC-END parallel information
 
 #DOC-START initialisation
