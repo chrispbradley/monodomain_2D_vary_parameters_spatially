@@ -33,7 +33,8 @@ pdeTimeStep = 0.001 #ms
 outputFrequency = 500 
 #DOC-END parameters
 
-#Setup field number handles
+#Setup user number handles
+contextUserNumber = 1
 coordinateSystemUserNumber = 1
 regionUserNumber = 1
 basisUserNumber = 1
@@ -58,20 +59,23 @@ cellMLStateFieldUserNumber = 7
 cellMLParametersFieldUserNumber = 8
 cellMLIntermediateFieldUserNumber = 9
 
+context = iron.Context()
+context.Create(contextUserNumber)
+
 worldRegion = iron.Region()
-iron.Context.WorldRegionGet(worldRegion)
+context.WorldRegionGet(worldRegion)
 
 # Set the OpenCMISS random seed so that we can test this example by using the
 # same parallel decomposition
-numberOfRandomSeeds = iron.Context.RandomSeedsSizeGet()
+numberOfRandomSeeds = context.RandomSeedsSizeGet()
 randomSeeds = [0]*numberOfRandomSeeds
 randomSeeds[0] = 100
-iron.Context.RandomSeedsSet(randomSeeds)
+context.RandomSeedsSet(randomSeeds)
 
 #DOC-START parallel information
 # Get the number of computational nodes and this computational node number
 computationEnvironment = iron.ComputationEnvironment()
-iron.Context.ComputationEnvironmentGet(computationEnvironment)
+context.ComputationEnvironmentGet(computationEnvironment)
 
 worldWorkGroup = iron.WorkGroup()
 computationEnvironment.WorldWorkGroupGet(worldWorkGroup)
@@ -82,7 +86,7 @@ computationalNodeNumber = worldWorkGroup.GroupNodeNumberGet()
 #DOC-START initialisation
 # Create a 2D rectangular cartesian coordinate system
 coordinateSystem = iron.CoordinateSystem()
-coordinateSystem.CreateStart(coordinateSystemUserNumber,iron.Context)
+coordinateSystem.CreateStart(coordinateSystemUserNumber,context)
 coordinateSystem.DimensionSet(2)
 coordinateSystem.CreateFinish()
 
@@ -97,7 +101,7 @@ region.CreateFinish()
 #DOC-START basis
 # Define a bilinear Lagrange basis
 basis = iron.Basis()
-basis.CreateStart(basisUserNumber,iron.Context)
+basis.CreateStart(basisUserNumber,context)
 basis.type = iron.BasisTypes.LAGRANGE_HERMITE_TP
 basis.numberOfXi = 2
 basis.interpolationXi = [iron.BasisInterpolationSpecifications.LINEAR_LAGRANGE]*2
@@ -154,7 +158,7 @@ equationsSetField = iron.Field()
 equationsSet = iron.EquationsSet()
 equationsSetSpecification = [iron.EquationsSetClasses.BIOELECTRICS,
         iron.EquationsSetTypes.MONODOMAIN_EQUATION,
-        iron.EquationsSetSubtypes.NONE]
+        iron.EquationsSetSubtypes.MONODOMAIN_CELLML]
 equationsSet.CreateStart(equationsSetUserNumber, region, geometricField,
         equationsSetSpecification, equationsSetFieldUserNumber, equationsSetField)
 equationsSet.CreateFinish()
@@ -296,7 +300,7 @@ problem = iron.Problem()
 problemSpecification = [iron.ProblemClasses.BIOELECTRICS,
     iron.ProblemTypes.MONODOMAIN_EQUATION,
     iron.ProblemSubtypes.MONODOMAIN_GUDUNOV_SPLIT]
-problem.CreateStart(problemUserNumber,iron.Context,problemSpecification)
+problem.CreateStart(problemUserNumber,context,problemSpecification)
 problem.CreateFinish()
 #DOC-END define monodomain problem
 
