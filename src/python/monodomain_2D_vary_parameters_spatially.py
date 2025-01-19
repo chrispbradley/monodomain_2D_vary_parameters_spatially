@@ -275,20 +275,20 @@ equationsSet.EquationsCreateFinish()
 # Find the domains of the first and last nodes
 firstNodeNumber = 1
 lastNodeNumber = (numberOfXElements+1)*(numberOfYElements+1)
-firstNodeDomain = decomposition.NodeDomainGet(firstNodeNumber, 1)
-lastNodeDomain = decomposition.NodeDomainGet(lastNodeNumber, 1)
+firstNodeDomain = decomposition.NodeDomainGet(1,firstNodeNumber)
+lastNodeDomain = decomposition.NodeDomainGet(1,lastNodeNumber)
 
 # Set the stimulus on half the bottom nodes
 stimComponent = cellML.FieldComponentGet(cellModel, oc.CellMLFieldTypes.PARAMETERS, "membrane/IStim")
 for node in range(1,int(numberOfXElements/2)):
-    nodeDomain = decomposition.NodeDomainGet(node,1)
+    nodeDomain = decomposition.NodeDomainGet(1,node)
     if nodeDomain == computationalNodeNumber:
         cellMLParametersField.ParameterSetUpdateNode(oc.FieldVariableTypes.U, oc.FieldParameterSetTypes.VALUES, 1, 1, node, stimComponent, stimValue)
 
 # Set up the gNa gradient
 gNaComponent = cellML.FieldComponentGet(cellModel, oc.CellMLFieldTypes.PARAMETERS, "fast_sodium_current/g_Na")
 for node in range(1,lastNodeNumber):
-    nodeDomain = decomposition.NodeDomainGet(node,1)
+    nodeDomain = decomposition.NodeDomainGet(1,node)
     if nodeDomain == computationalNodeNumber:
         x = geometricField.ParameterSetGetNode(oc.FieldVariableTypes.U, oc.FieldParameterSetTypes.VALUES, 1, 1, node, 1)
         y = geometricField.ParameterSetGetNode(oc.FieldVariableTypes.U, oc.FieldParameterSetTypes.VALUES, 1, 1, node, 2)
@@ -355,7 +355,7 @@ problem.Solve()
 
 # Now turn the stimulus off
 for node in range(1,int(numberOfXElements/2)):
-    nodeDomain = decomposition.NodeDomainGet(node,1)
+    nodeDomain = decomposition.NodeDomainGet(1,node)
     if nodeDomain == computationalNodeNumber:
         cellMLParametersField.ParameterSetUpdateNode(oc.FieldVariableTypes.U, oc.FieldParameterSetTypes.VALUES, 1, 1, node, stimComponent, 0.0)
 
